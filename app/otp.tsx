@@ -38,12 +38,10 @@ const SYRIA_PHONE = [
 ];
 
 const Page = () => {
-  const [loading, setLoading] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
-
-  const { bottom } = useSafeAreaInsets();
-
   const router = useRouter();
+  const { bottom } = useSafeAreaInsets();
+  const [loading, setLoading] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const keyboardVerticalOffset = Platform.OS === "ios" ? 90 : 0;
 
@@ -56,13 +54,19 @@ const Page = () => {
 
     setTimeout(() => {
       setLoading(false);
+
+      router.push(`/verify/${phoneNumber}`);
     }, 2000);
   };
 
   const trySignIn = async () => {};
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      behavior="padding"
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={keyboardVerticalOffset}
+    >
       {loading && (
         <View style={styles.loading}>
           <ActivityIndicator size="large" color={Colors.primary} />
