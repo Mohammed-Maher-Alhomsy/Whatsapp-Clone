@@ -34,8 +34,8 @@ export default function RootLayout() {
 function RootLayoutNav() {
   return (
     <>
-      <Stack>
-        <Stack.Screen name="index" options={{ statusBarStyle: "dark" }} />
+      <Stack screenOptions={{ statusBarStyle: "dark" }}>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
       </Stack>
     </>
   );
