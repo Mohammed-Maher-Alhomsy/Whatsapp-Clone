@@ -1,14 +1,95 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+
+import { useAuth } from "@clerk/clerk-expo";
+import { TouchableOpacity } from "react-native-gesture-handler";
+
+import Colors from "@/constants/Colors";
+import SettingsList from "@/components/SettingsList";
 
 const Page = () => {
+  const devices = [
+    {
+      name: "Broadcast Lists",
+      icon: "megaphone",
+      backgroundColor: Colors.green,
+    },
+    {
+      name: "Starred Messages",
+      icon: "star",
+      backgroundColor: Colors.yellow,
+    },
+    {
+      name: "Linked Devices",
+      icon: "laptop-outline",
+      backgroundColor: Colors.green,
+    },
+  ];
+
+  const items = [
+    {
+      name: "Account",
+      icon: "key",
+      backgroundColor: Colors.primary,
+    },
+    {
+      name: "Privacy",
+      icon: "lock-closed",
+      backgroundColor: "#33A5D1",
+    },
+    {
+      name: "Chats",
+      icon: "logo-whatsapp",
+      backgroundColor: Colors.green,
+    },
+    {
+      name: "Notifications",
+      icon: "notifications",
+      backgroundColor: Colors.red,
+    },
+    {
+      name: "Storage and Data",
+      icon: "repeat",
+      backgroundColor: Colors.green,
+    },
+  ];
+
+  const support = [
+    {
+      name: "Help",
+      icon: "information",
+      backgroundColor: Colors.primary,
+    },
+    {
+      name: "Tell a Friend",
+      icon: "heart",
+      backgroundColor: Colors.red,
+    },
+  ];
+
+  const { signOut } = useAuth();
+
   return (
-    <View>
-      <Text>Page</Text>
+    <View style={{ flex: 1, backgroundColor: Colors.background }}>
+      <ScrollView>
+        <SettingsList data={devices} />
+        <SettingsList data={items} />
+        <SettingsList data={support} />
+
+        <TouchableOpacity onPress={() => signOut()}>
+          <Text style={styles.logOutText}>Log Out</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 };
 
 export default Page;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  logOutText: {
+    color: Colors.primary,
+    fontSize: 18,
+    textAlign: "center",
+    paddingVertical: 8,
+  },
+});
