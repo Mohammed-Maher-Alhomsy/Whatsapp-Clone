@@ -86,8 +86,8 @@ const InitialLayout = () => {
       />
 
       <Stack.Screen
-        name="(tabs)/chats"
-        options={{ headerBackTitleVisible: false }}
+        name="(tabs)"
+        options={{ headerBackTitleVisible: false, headerShown: false }}
       />
     </Stack>
   );

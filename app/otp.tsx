@@ -64,6 +64,7 @@ const USA_PHONE = [
   /\d/,
   /\d/,
   /\d/,
+  /\d/,
 ];
 
 const Page = () => {
