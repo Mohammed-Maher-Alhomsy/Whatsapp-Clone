@@ -22,6 +22,7 @@ const Layout = () => {
           tabBarActiveBackgroundColor: Colors.background,
           headerStyle: { backgroundColor: Colors.background },
           headerShadowVisible: false,
+          tabBarHideOnKeyboard: true,
         }}
       >
         <Tabs.Screen
@@ -71,7 +72,8 @@ const Layout = () => {
         <Tabs.Screen
           name="settings"
           options={{
-            title: "Settings",
+            // title: "Settings",
+            headerShown: false,
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="cog" color={color} size={size} />
             ),
