@@ -39,6 +39,7 @@ const Layout = () => {
           name="calls"
           options={{
             title: "Calls",
+            headerShown: false,
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons
                 name="phone-outline"
