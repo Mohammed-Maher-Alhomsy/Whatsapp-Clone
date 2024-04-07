@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import { Stack } from "expo-router";
+import { Stack, useRouter, useSegments } from "expo-router";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { ClerkProvider } from "@clerk/clerk-expo";
+import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 
 import * as SecureStore from "expo-secure-store";
 
@@ -37,6 +37,10 @@ const InitialLayout = () => {
     ...FontAwesome.font,
   });
 
+  const router = useRouter();
+  const segments = useSegments();
+  const { isLoaded, isSignedIn } = useAuth();
+
   useEffect(() => {
     if (error) throw error;
   }, [error]);
@@ -47,7 +51,21 @@ const InitialLayout = () => {
     }
   }, [loaded]);
 
-  if (!loaded) {
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    const inTabsGroup = segments[0] === "(tabs)";
+
+    console.log("isSignedIn changed", isSignedIn);
+
+    if (isSignedIn && !inTabsGroup) {
+      router.replace("/(tabs)/chats");
+    } else if (!isSignedIn) {
+      router.replace("/");
+    }
+  }, [isSignedIn]);
+
+  if (!loaded || !isLoaded) {
     return null;
   }
 
@@ -65,6 +83,11 @@ const InitialLayout = () => {
         options={{
           headerBackTitle: "Edit number",
         }}
+      />
+
+      <Stack.Screen
+        name="(tabs)/chats"
+        options={{ headerBackTitleVisible: false }}
       />
     </Stack>
   );

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   Text,
   View,
+  Alert,
   Platform,
   StyleSheet,
   TouchableOpacity,
@@ -16,6 +17,11 @@ import {
 } from "react-native-confirmation-code-field";
 
 import Colors from "@/constants/Colors";
+import {
+  isClerkAPIResponseError,
+  useSignIn,
+  useSignUp,
+} from "@clerk/clerk-expo";
 
 type Params = {
   phone: string;
@@ -25,6 +31,9 @@ type Params = {
 const Page = () => {
   const [code, setCode] = useState("");
   const { phone, signin } = useLocalSearchParams<Params>();
+
+  const { signIn } = useSignIn();
+  const { signUp, setActive } = useSignUp();
 
   const ref = useBlurOnFulfill({ value: code, cellCount: 6 });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -42,9 +51,67 @@ const Page = () => {
     }
   }, [code]);
 
-  const verifyCode = async () => {};
-  const resendCode = async () => {};
-  const verifySignIn = async () => {};
+  const verifyCode = async () => {
+    try {
+      await signUp?.attemptPhoneNumberVerification({ code });
+      await setActive!({ session: signUp?.createdSessionId });
+    } catch (error) {
+      console.log("error", JSON.stringify(error, null, 2));
+
+      if (isClerkAPIResponseError(error)) {
+        Alert.alert("Error", error.errors[0].message);
+      }
+    }
+  };
+
+  const resendCode = async () => {
+    try {
+      if (signin === "true") {
+        const { supportedFirstFactors } = await signIn!.create({
+          identifier: phone,
+        });
+
+        const firstPhoneFactory: any = supportedFirstFactors.find(
+          ({ strategy }) => strategy === "phone_code"
+        );
+
+        const { phoneNumberId } = firstPhoneFactory;
+
+        await signIn!.prepareFirstFactor({
+          strategy: "phone_code",
+          phoneNumberId,
+        });
+      } else {
+        await signUp?.create({
+          phoneNumber: phone,
+        });
+        signUp!.preparePhoneNumberVerification();
+      }
+    } catch (err) {
+      console.log("Error", JSON.stringify(err, null, 2));
+
+      if (isClerkAPIResponseError(err)) {
+        Alert.alert("Error", err.errors[0].message);
+      }
+    }
+  };
+
+  const verifySignIn = async () => {
+    try {
+      await signIn!.attemptFirstFactor({
+        strategy: "phone_code",
+        code,
+      });
+
+      await setActive!({ session: signIn?.createdSessionId });
+    } catch (err) {
+      console.log("Error", JSON.stringify(err, null, 2));
+
+      if (isClerkAPIResponseError(err)) {
+        Alert.alert("Error", err.errors[0].message);
+      }
+    }
+  };
 
   return (
     <View style={styles.constainer}>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Text,
   View,
+  Alert,
   Linking,
   Platform,
   StyleSheet,
@@ -17,6 +18,11 @@ import MaskInput from "react-native-mask-input";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import Colors from "@/constants/Colors";
+import {
+  isClerkAPIResponseError,
+  useSignIn,
+  useSignUp,
+} from "@clerk/clerk-expo";
 
 const SYRIA_PHONE = [
   "(",
@@ -39,11 +45,35 @@ const SYRIA_PHONE = [
   /\d/,
 ];
 
+const USA_PHONE = [
+  "+",
+  /\d/,
+  " ",
+  "(",
+  /\d/,
+  /\d/,
+  /\d/,
+  ")",
+  " ",
+  // " ",
+  /\d/,
+  /\d/,
+  /\d/,
+  "-",
+  /\d/,
+  /\d/,
+  /\d/,
+  /\d/,
+];
+
 const Page = () => {
   const router = useRouter();
   const { bottom } = useSafeAreaInsets();
   const [loading, setLoading] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
+
+  const { signIn } = useSignIn();
+  const { setActive, signUp } = useSignUp();
 
   const keyboardVerticalOffset = Platform.OS === "ios" ? 90 : 0;
 
@@ -54,14 +84,44 @@ const Page = () => {
   const sendOTP = async () => {
     setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await signUp?.create({ phoneNumber });
+      await signUp?.preparePhoneNumberVerification();
 
       router.push(`/verify/${phoneNumber}`);
-    }, 200);
+    } catch (error) {
+      if (isClerkAPIResponseError(error)) {
+        if (error.errors[0].code === "form_identifier_exists") {
+          console.log("User Exists");
+
+          await trySignIn();
+        } else {
+          setLoading(false);
+          Alert.alert("Error", error.errors[0].message);
+        }
+      }
+    }
   };
 
-  const trySignIn = async () => {};
+  const trySignIn = async () => {
+    const { supportedFirstFactors } = await signIn!.create({
+      identifier: phoneNumber,
+    });
+
+    const firstPhoneFactory: any = supportedFirstFactors.find(
+      (factor) => factor.strategy === "phone_code"
+    );
+
+    const { phoneNumberId } = firstPhoneFactory;
+
+    await signIn?.prepareFirstFactor({
+      strategy: "phone_code",
+      phoneNumberId,
+    });
+
+    router.push(`/verify/${phoneNumber}?signin=true`);
+    setLoading(false);
+  };
 
   return (
     <ScrollView style={{ flex: 1 }}>
@@ -102,7 +162,7 @@ const Page = () => {
                 console.log(masked);
                 console.log(unmasked);
               }}
-              mask={SYRIA_PHONE}
+              mask={USA_PHONE}
             />
           </View>
 
