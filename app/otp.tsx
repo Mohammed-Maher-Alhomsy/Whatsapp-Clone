@@ -1,20 +1,22 @@
+import React, { useState } from "react";
 import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
+  Text,
+  View,
   Linking,
   Platform,
   StyleSheet,
-  Text,
+  ScrollView,
   TouchableOpacity,
-  View,
+  ActivityIndicator,
+  KeyboardAvoidingView,
 } from "react-native";
-import React, { useState } from "react";
+
 import { useRouter } from "expo-router";
-import Colors from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
+import MaskInput from "react-native-mask-input";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import MaskInput from "react-native-mask-input";
+import Colors from "@/constants/Colors";
 
 const SYRIA_PHONE = [
   "(",
@@ -56,86 +58,89 @@ const Page = () => {
       setLoading(false);
 
       router.push(`/verify/${phoneNumber}`);
-    }, 2000);
+    }, 200);
   };
 
   const trySignIn = async () => {};
 
   return (
-    <KeyboardAvoidingView
-      behavior="padding"
-      style={{ flex: 1 }}
-      keyboardVerticalOffset={keyboardVerticalOffset}
-    >
-      {loading && (
-        <View style={styles.loading}>
-          <ActivityIndicator size="large" color={Colors.primary} />
-          <Text style={{ padding: 10, fontSize: 20 }}>Sending Code...</Text>
-        </View>
-      )}
+    <ScrollView style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        behavior="padding"
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={keyboardVerticalOffset}
+      >
+        {loading && (
+          <View style={styles.loading}>
+            <ActivityIndicator size="large" color={Colors.primary} />
+            <Text style={{ padding: 10, fontSize: 20 }}>Sending Code...</Text>
+          </View>
+        )}
 
-      <View style={styles.container}>
-        <Text style={styles.description}>
-          WhatsApp will need to verify your account. Carrier charges may apply.
-        </Text>
+        <View style={styles.container}>
+          <Text style={styles.description}>
+            WhatsApp will need to verify your account. Carrier charges may
+            apply.
+          </Text>
 
-        <View style={styles.list}>
-          <View style={styles.listItem}>
-            <Text style={styles.listItemText}>Syria</Text>
-            <Ionicons name="chevron-forward" size={20} color={Colors.gray} />
+          <View style={styles.list}>
+            <View style={styles.listItem}>
+              <Text style={styles.listItemText}>Syria</Text>
+              <Ionicons name="chevron-forward" size={20} color={Colors.gray} />
+            </View>
+
+            <View style={styles.separator} />
+
+            <MaskInput
+              style={styles.input}
+              value={phoneNumber}
+              keyboardType="phone-pad"
+              autoFocus
+              placeholder="(+963) your phone number"
+              onChangeText={(masked, unmasked) => {
+                setPhoneNumber(masked);
+                console.log(masked);
+                console.log(unmasked);
+              }}
+              mask={SYRIA_PHONE}
+            />
           </View>
 
-          <View style={styles.separator} />
-
-          <MaskInput
-            style={styles.input}
-            value={phoneNumber}
-            keyboardType="phone-pad"
-            autoFocus
-            placeholder="(+963) your phone number"
-            onChangeText={(masked, unmasked) => {
-              setPhoneNumber(masked);
-              console.log(masked);
-              console.log(unmasked);
-            }}
-            mask={SYRIA_PHONE}
-          />
-        </View>
-
-        <Text style={styles.legal}>
-          You must be{" "}
-          <Text style={styles.link} onPress={openLink}>
-            at least 16 years old{" "}
+          <Text style={styles.legal}>
+            You must be{" "}
+            <Text style={styles.link} onPress={openLink}>
+              at least 16 years old{" "}
+            </Text>
+            to register. Learn how WhatsApp works with the{" "}
+            <Text style={styles.link} onPress={openLink}>
+              Meta Companies
+            </Text>
+            .
           </Text>
-          to register. Learn how WhatsApp works with the{" "}
-          <Text style={styles.link} onPress={openLink}>
-            Meta Companies
-          </Text>
-          .
-        </Text>
 
-        <View style={{ flex: 1 }} />
+          <View style={{ flex: 1 }} />
 
-        <TouchableOpacity
-          style={[
-            styles.button,
-            phoneNumber !== "" ? styles.enabled : null,
-            { marginBottom: bottom },
-          ]}
-          onPress={sendOTP}
-          disabled={phoneNumber === ""}
-        >
-          <Text
+          <TouchableOpacity
             style={[
-              styles.buttonText,
-              phoneNumber !== "" ? { color: "#fff" } : null,
+              styles.button,
+              phoneNumber !== "" ? styles.enabled : null,
+              { marginBottom: bottom },
             ]}
+            onPress={sendOTP}
+            disabled={phoneNumber === ""}
           >
-            Next
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+            <Text
+              style={[
+                styles.buttonText,
+                phoneNumber !== "" ? { color: "#fff" } : null,
+              ]}
+            >
+              Next
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 };
 
