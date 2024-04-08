@@ -7,6 +7,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import CallsItem from "./CallsItem";
+import SwipeableRow from "./SwipeableRow";
 import { defaultStyles } from "@/constants/Styles";
 
 const transition = CurvedTransition.delay(100);
@@ -21,9 +22,10 @@ type Props = {
     missed: boolean;
     incoming: boolean;
   }[];
+  onDelete: (id: string) => void;
 };
 
-const CallsList = ({ items }: Props) => {
+const CallsList = ({ items, onDelete }: Props) => {
   return (
     <Animated.FlatList
       data={items}
@@ -33,12 +35,14 @@ const CallsList = ({ items }: Props) => {
       keyExtractor={(item) => item.id}
       ItemSeparatorComponent={() => <View style={defaultStyles.separator} />}
       renderItem={({ item, index }) => (
-        <Animated.View
-          entering={FadeInUp.delay(index * 10)}
-          exiting={FadeOutUp}
-        >
-          <CallsItem {...item} />
-        </Animated.View>
+        <SwipeableRow onDelete={() => onDelete(item.id)}>
+          <Animated.View
+            entering={FadeInUp.delay(index * 10)}
+            exiting={FadeOutUp}
+          >
+            <CallsItem {...item} />
+          </Animated.View>
+        </SwipeableRow>
       )}
     />
   );

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Text, View, ScrollView, TouchableOpacity } from "react-native";
 
 import { Stack } from "expo-router";
+import * as Haptics from "expo-haptics";
 import Animated, { CurvedTransition } from "react-native-reanimated";
 
 import Colors from "@/constants/Colors";
@@ -17,9 +18,7 @@ const Page = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedOption, setSelectedOption] = useState("All");
 
-  const onEdit = () => {
-    setIsEditing((prev) => !prev);
-  };
+  const onEdit = () => setIsEditing((prev) => !prev);
 
   useEffect(() => {
     if (selectedOption === "All") {
@@ -28,6 +27,12 @@ const Page = () => {
       setItems(calls.filter((call) => call.missed));
     }
   }, [selectedOption]);
+
+  const onDelete = (id: string) => {
+    const newItems = items.filter((item) => item.id !== id);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setItems(newItems);
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.background }}>
@@ -55,7 +60,7 @@ const Page = () => {
 
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <Animated.View style={defaultStyles.block} layout={transition}>
-          <CallsList items={items} />
+          <CallsList items={items} onDelete={onDelete} />
         </Animated.View>
       </ScrollView>
     </View>
