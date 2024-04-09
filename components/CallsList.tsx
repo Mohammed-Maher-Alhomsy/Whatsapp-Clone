@@ -1,12 +1,17 @@
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import Animated, {
   FadeInUp,
   FadeOutUp,
+  withTiming,
+  SharedValue,
   CurvedTransition,
+  useAnimatedStyle,
 } from "react-native-reanimated";
+import { Ionicons } from "@expo/vector-icons";
 
 import CallsItem from "./CallsItem";
+import Colors from "@/constants/Colors";
 import SwipeableRow from "./SwipeableRow";
 import { defaultStyles } from "@/constants/Styles";
 
@@ -22,10 +27,18 @@ type Props = {
     missed: boolean;
     incoming: boolean;
   }[];
+  editing: SharedValue<number>;
   onDelete: (id: string) => void;
 };
 
-const CallsList = ({ items, onDelete }: Props) => {
+const AnimatedTouchableOpacity =
+  Animated.createAnimatedComponent(TouchableOpacity);
+
+const CallsList = ({ items, onDelete, editing }: Props) => {
+  const animatedRowStyles = useAnimatedStyle(() => ({
+    transform: [{ translateX: withTiming(editing.value) }],
+  }));
+
   return (
     <Animated.FlatList
       data={items}
@@ -39,8 +52,19 @@ const CallsList = ({ items, onDelete }: Props) => {
           <Animated.View
             entering={FadeInUp.delay(index * 10)}
             exiting={FadeOutUp}
+            style={{ flexDirection: "row", alignItems: "center" }}
           >
-            <CallsItem {...item} />
+            <AnimatedTouchableOpacity
+              onPress={() => onDelete(item.id)}
+              style={[animatedRowStyles, { paddingLeft: 8 }]}
+            >
+              <Ionicons name="remove-circle" size={24} color={Colors.red} />
+            </AnimatedTouchableOpacity>
+
+            <CallsItem
+              item={{ ...item }}
+              animatedRowStyles={animatedRowStyles}
+            />
           </Animated.View>
         </SwipeableRow>
       )}

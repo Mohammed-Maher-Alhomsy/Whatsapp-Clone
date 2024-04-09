@@ -3,7 +3,10 @@ import { Text, View, ScrollView, TouchableOpacity } from "react-native";
 
 import { Stack } from "expo-router";
 import * as Haptics from "expo-haptics";
-import Animated, { CurvedTransition } from "react-native-reanimated";
+import Animated, {
+  useSharedValue,
+  CurvedTransition,
+} from "react-native-reanimated";
 
 import Colors from "@/constants/Colors";
 import calls from "@/assets/data/calls.json";
@@ -14,11 +17,16 @@ import { SegmentedControl } from "@/components/SegmentedControl";
 const transition = CurvedTransition.delay(100);
 
 const Page = () => {
+  const editing = useSharedValue(-30);
   const [items, setItems] = useState(calls);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedOption, setSelectedOption] = useState("All");
 
-  const onEdit = () => setIsEditing((prev) => !prev);
+  const onEdit = () => {
+    const editingNew = !isEditing;
+    editing.value = editingNew ? 0 : -30;
+    setIsEditing(editingNew);
+  };
 
   useEffect(() => {
     if (selectedOption === "All") {
@@ -60,7 +68,7 @@ const Page = () => {
 
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <Animated.View style={defaultStyles.block} layout={transition}>
-          <CallsList items={items} onDelete={onDelete} />
+          <CallsList items={items} onDelete={onDelete} editing={editing} />
         </Animated.View>
       </ScrollView>
     </View>

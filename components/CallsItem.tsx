@@ -3,22 +3,32 @@ import { Image, StyleSheet, Text, View } from "react-native";
 
 import { format } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
+import Animated from "react-native-reanimated";
 
 import Colors from "@/constants/Colors";
 import { defaultStyles } from "@/constants/Styles";
 
 type Props = {
-  img: string;
-  name: string;
-  date: string;
-  video: boolean;
-  missed: boolean;
-  incoming: boolean;
+  item: {
+    img: string;
+    name: string;
+    date: string;
+    video: boolean;
+    missed: boolean;
+    incoming: boolean;
+  };
+  animatedRowStyles: {
+    transform: {
+      translateX: number;
+    }[];
+  };
 };
 
-const CallsItem = ({ img, missed, name, video, incoming, date }: Props) => {
+const CallsItem = ({ item, animatedRowStyles }: Props) => {
+  const { date, img, incoming, missed, name, video } = item;
+
   return (
-    <View style={[defaultStyles.item]}>
+    <Animated.View style={[defaultStyles.item, animatedRowStyles]}>
       <Image style={styles.avatar} src={img} />
 
       <View style={{ flex: 1, gap: 2 }}>
@@ -58,7 +68,7 @@ const CallsItem = ({ img, missed, name, video, incoming, date }: Props) => {
           name="information-circle-outline"
         />
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
