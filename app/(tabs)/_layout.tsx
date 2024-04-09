@@ -68,10 +68,10 @@ const Layout = () => {
             title: "Chats",
             headerTitleStyle: { display: "none" },
             headerShown: false,
-            // headerStyle: {
-            //   backgroundColor: "#fff",
-            //   // display: "none",
-            // },
+
+            tabBarStyle: {
+              display: segments[2] === "[id]" ? "none" : "flex",
+            },
 
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="chatbubbles" color={color} size={size} />
