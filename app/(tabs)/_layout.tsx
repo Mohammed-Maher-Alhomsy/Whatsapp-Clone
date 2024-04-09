@@ -77,7 +77,7 @@ const Layout = () => {
                   />
                 </TouchableOpacity>
 
-                <Link href="/" asChild>
+                <Link href="/(modals)/new-chat" asChild>
                   <TouchableOpacity>
                     <Ionicons
                       size={30}
