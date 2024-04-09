@@ -1,6 +1,6 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
-import { Tabs } from "expo-router";
+import { Link, Tabs } from "expo-router";
 import {
   Ionicons,
   MaterialIcons,
@@ -64,6 +64,41 @@ const Layout = () => {
           name="chats"
           options={{
             title: "Chats",
+            headerTitleStyle: { display: "none" },
+            headerStyle: { backgroundColor: "#fff" },
+
+            headerRight: () => (
+              <View style={{ flexDirection: "row", gap: 30 }}>
+                <TouchableOpacity>
+                  <Ionicons
+                    size={30}
+                    name="camera-outline"
+                    color={Colors.primary}
+                  />
+                </TouchableOpacity>
+
+                <Link href="/" asChild>
+                  <TouchableOpacity>
+                    <Ionicons
+                      size={30}
+                      name="add-circle"
+                      color={Colors.primary}
+                    />
+                  </TouchableOpacity>
+                </Link>
+              </View>
+            ),
+
+            headerLeft: () => (
+              <TouchableOpacity>
+                <Ionicons
+                  size={30}
+                  color={Colors.primary}
+                  name="ellipsis-horizontal-circle-outline"
+                />
+              </TouchableOpacity>
+            ),
+
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="chatbubbles" color={color} size={size} />
             ),
