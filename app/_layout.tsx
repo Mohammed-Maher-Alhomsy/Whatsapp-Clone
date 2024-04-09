@@ -63,7 +63,7 @@ const InitialLayout = () => {
     if (isSignedIn && !inTabsGroup) {
       router.replace("/(tabs)/chats");
     } else if (!isSignedIn) {
-      router.replace("/(tabs)/chats");
+      router.replace("/");
     }
   }, [isSignedIn]);
 
