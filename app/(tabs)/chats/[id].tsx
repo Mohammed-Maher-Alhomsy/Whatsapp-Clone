@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import { ImageBackground, StyleSheet } from "react-native";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { ImageBackground, StyleSheet, View } from "react-native";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IMessage, GiftedChat, SystemMessage } from "react-native-gifted-chat";
@@ -9,11 +9,17 @@ import ChatInput from "@/components/ChatInput";
 import SendButton from "@/components/SendButton";
 import ChatMessage from "@/components/ChatMessage";
 import messagesData from "@/assets/data/messages.json";
+import { Swipeable } from "react-native-gesture-handler";
+import ChatMessageBox from "@/components/ChatMessageBox";
+import ReplyMessageBar from "@/components/ReplyMessageBar";
 
 const Page = () => {
   const [text, setText] = useState("");
   const { bottom } = useSafeAreaInsets();
   const [messages, setMessages] = useState<IMessage[]>([]);
+
+  const swipeableRowRef = useRef<Swipeable | null>(null);
+  const [replyMessage, setReplyMessage] = useState<IMessage | null>(null);
 
   useEffect(() => {
     setMessages([
@@ -41,6 +47,26 @@ const Page = () => {
     setMessages((prev) => GiftedChat.append(prev, messages));
   }, []);
 
+  const updateRowRef = useCallback(
+    (ref: any) => {
+      if (
+        ref &&
+        replyMessage &&
+        ref.props.children.props.currentMessage?._id === replyMessage._id
+      ) {
+        swipeableRowRef.current = ref;
+      }
+    },
+    [replyMessage]
+  );
+
+  useEffect(() => {
+    if (replyMessage && swipeableRowRef.current) {
+      swipeableRowRef.current.close();
+      swipeableRowRef.current = null;
+    }
+  }, [replyMessage]);
+
   return (
     <ImageBackground
       source={require("@/assets/images/pattern.png")}
@@ -66,6 +92,19 @@ const Page = () => {
         )}
         renderSend={(props) => <SendButton props={props} text={text} />}
         renderInputToolbar={(props) => <ChatInput props={props} />}
+        renderMessage={(props) => (
+          <ChatMessageBox
+            {...props}
+            updateRowRef={updateRowRef}
+            setReplyOnSwipeOpen={setReplyMessage}
+          />
+        )}
+        renderChatFooter={() => (
+          <ReplyMessageBar
+            message={replyMessage}
+            clearReply={() => setReplyMessage(null)}
+          />
+        )}
       />
     </ImageBackground>
   );
@@ -76,7 +115,7 @@ export default Page;
 const styles = StyleSheet.create({
   composer: {
     fontSize: 16,
-    paddingTop: 8,
+    paddingVertical: 8,
     borderWidth: 1,
     borderRadius: 15,
     paddingHorizontal: 10,
