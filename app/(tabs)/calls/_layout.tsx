@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 import Colors from "@/constants/Colors";
 
@@ -12,9 +12,7 @@ const Layout = () => {
         headerLargeTitle: true,
         headerShadowVisible: false,
         headerStyle: { backgroundColor: Colors.background },
-        headerSearchBarOptions: {
-          placeholder: "Search",
-        },
+        headerSearchBarOptions: { placeholder: "Search" },
 
         headerRight: () => (
           <TouchableOpacity>
