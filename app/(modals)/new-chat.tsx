@@ -61,11 +61,11 @@ const styles = StyleSheet.create({
   listItemContainer: {
     flex: 1,
     gap: 10,
-    height: 50,
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 14,
     backgroundColor: "#fff",
+    paddingVertical: 8,
   },
 
   sectionHeaderContainer: {

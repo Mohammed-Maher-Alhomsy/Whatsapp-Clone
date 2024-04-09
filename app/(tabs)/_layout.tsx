@@ -1,6 +1,6 @@
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
-import { Link, Tabs } from "expo-router";
+import { Link, Tabs, useSegments } from "expo-router";
 import {
   Ionicons,
   MaterialIcons,
@@ -10,6 +10,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Colors from "@/constants/Colors";
 
 const Layout = () => {
+  const segments = useSegments();
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Tabs
@@ -65,39 +67,11 @@ const Layout = () => {
           options={{
             title: "Chats",
             headerTitleStyle: { display: "none" },
-            headerStyle: { backgroundColor: "#fff" },
-
-            headerRight: () => (
-              <View style={{ flexDirection: "row", gap: 30 }}>
-                <TouchableOpacity>
-                  <Ionicons
-                    size={30}
-                    name="camera-outline"
-                    color={Colors.primary}
-                  />
-                </TouchableOpacity>
-
-                <Link href="/(modals)/new-chat" asChild>
-                  <TouchableOpacity>
-                    <Ionicons
-                      size={30}
-                      name="add-circle"
-                      color={Colors.primary}
-                    />
-                  </TouchableOpacity>
-                </Link>
-              </View>
-            ),
-
-            headerLeft: () => (
-              <TouchableOpacity>
-                <Ionicons
-                  size={30}
-                  color={Colors.primary}
-                  name="ellipsis-horizontal-circle-outline"
-                />
-              </TouchableOpacity>
-            ),
+            headerShown: false,
+            // headerStyle: {
+            //   backgroundColor: "#fff",
+            //   // display: "none",
+            // },
 
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="chatbubbles" color={color} size={size} />

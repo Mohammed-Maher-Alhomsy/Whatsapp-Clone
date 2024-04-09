@@ -25,7 +25,7 @@ type Props = {
 const ChatRow = ({ id, date, from, img, msg, read, unreadCount }: Props) => {
   return (
     <AppleStyleSwipeableRow>
-      <Link href="/(tabs)/chats/" asChild>
+      <Link href={`/(tabs)/chats/${id}`} asChild>
         <TouchableHighlight underlayColor="#ddd">
           <View
             style={{

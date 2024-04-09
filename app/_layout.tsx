@@ -58,7 +58,6 @@ const InitialLayout = () => {
     if (!isLoaded) return;
 
     const inTabsGroup = segments[0] === "(tabs)";
-
     console.log("isSignedIn changed", isSignedIn);
 
     if (isSignedIn && !inTabsGroup) {
@@ -98,27 +97,12 @@ const InitialLayout = () => {
         options={{
           title: "New Chat",
           presentation: "modal",
-          // headerTransparent: true,
           headerBlurEffect: "regular",
           headerStyle: { backgroundColor: Colors.background },
           headerSearchBarOptions: {
             hideWhenScrolling: false,
             placeholder: "Search name or number",
           },
-
-          // headerRight: () => (
-          //   <Link href="/(tabs)/chats" asChild>
-          //     <TouchableOpacity
-          //       style={{
-          //         padding: 4,
-          //         borderRadius: 20,
-          //         backgroundColor: Colors.lightGray,
-          //       }}
-          //     >
-          //       <Ionicons name="close" color={Colors.gray} size={30} />
-          //     </TouchableOpacity>
-          //   </Link>
-          // ),
         }}
       />
     </Stack>
